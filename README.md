@@ -107,6 +107,10 @@ python utils/run_sweep.py --model poyo
 - Ray runs locally. `--gpu-req` and `--cpu-req` set the per-trial resource share, and `--num-samples` the number of trials per recording.
 - Each model defines its own search space as `create_search_space` and `process_tunable_params`.
 
+### 5. Using Your Own Neural Encoder
+
+To pretrain BEEMO with your own neural encoder, replace the POYO or NDT encoder in `src/model/beemo_poyo.py` or `src/model/beemo_ndt.py` with your custom encoder.
+
 ## Citation
 
 If you find this repository useful in your research, please consider giving a star ⭐ and a citation
