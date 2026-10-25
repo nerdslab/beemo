@@ -1,0 +1,8 @@
+name: src.model.baselines.gru.GRU
+args:
+  bin_size: 0.02
+  depth: 2
+  hidden_dim: 64
+  dropout: 0.2
+  bidirectional: false
+  ctx_duration: 1.0

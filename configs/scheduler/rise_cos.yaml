@@ -1,0 +1,4 @@
+name: src.optim.rise_cosine_scheduler.RiseCosineScheduler
+args:
+  rise: 1
+  decay: 1

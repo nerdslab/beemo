@@ -1,0 +1,14 @@
+# one recording, from scratch. sweep.yaml builds on this
+defaults:
+  - base
+  - model: poyo.yaml
+  - data: perich_miller_ft.yaml
+  - trainer: baseline
+  - _self_
+
+val:
+  patience: 50
+
+model:
+  args:
+    bin_size: 0.02

@@ -1,0 +1,25 @@
+# fine-tune a pretrained checkpoint on one recording
+defaults:
+  - base
+  - model: backbone.yaml
+  - data: perich_miller_ft.yaml
+  - trainer: baseline
+  - _self_
+
+val:
+  patience: 50
+
+ckpt:
+  enable: true
+  every_n_epochs: 1
+
+finetuning:
+  enable: true
+  unfreeze_at_epoch: -1
+
+wandb:
+  project: beemo-finetune
+
+model:
+  args:
+    bin_size: 0.02

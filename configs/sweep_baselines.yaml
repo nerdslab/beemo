@@ -1,0 +1,15 @@
+# sweeps for linear / mlp / gru. same as sweep.yaml but without UnitDropout
+
+defaults:
+  - sweep
+  - _self_ # ensures current config overrides defaults
+
+train_transform:
+  - name: src.data.data_view.DataView
+    args:
+      ctx_len: ${window}
+      pred_len: ${window}
+      feature_fields: null
+      feature_style: null
+      reset_origin: false
+      test_mode: false

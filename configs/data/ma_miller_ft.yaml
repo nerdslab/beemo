@@ -1,0 +1,6 @@
+name: src.datasets.ma_miller.MaMillerDataset
+args:
+  root: ${data_root}
+  split_type: causal
+  recording_ids:
+    - chewie_20160927_center_out_reaching

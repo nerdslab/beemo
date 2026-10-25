@@ -1,0 +1,84 @@
+defaults:
+  - scheduler: rise_cos.yaml
+
+window: 1
+
+train_transform:
+  - name: src.transforms.UnitDropout
+    args:
+      max_units: 300
+      min_units: 30
+      mode_units: 100
+      peak: 4
+  - name: src.data.data_view.DataView
+    args:
+      ctx_len: ${window}
+      pred_len: ${window}
+      feature_fields: null
+      feature_style: null
+      reset_origin: false
+      test_mode: false
+
+eval_transform:
+  - name: src.data.data_view.DataView
+    args:
+      ctx_len: ${window}
+      pred_len: ${window}
+      feature_fields: null
+      feature_style: null
+      reset_origin: false
+      test_mode: true
+
+optimizer:
+  name: src.optim.grouped_adamw.grouped_adamw
+  args:
+    lr: 5e-5
+    weight_decay: 1e-2
+
+val:
+  first: false  # do val before train (for debug)
+  every_n_epochs: 1
+  loss: false  # compute val loss
+
+finetuning:
+  enable: false
+  unfreeze_at_epoch: 0
+
+data_root: ../data/processed
+
+seed: 42
+
+# GPU and CPU
+precision: bf16
+num_workers: 7
+
+num_epochs: 300
+batch_size: 32
+
+ckpt:
+  enable: false
+  dir: ../ckpt/  # overriden with $CKPT_DIR in env
+  every_n_epochs: 50
+  load_from: null
+  resume: false
+  model_only: false
+
+# Logging
+wandb:
+  mode: online  # options: online / offline / disabled
+  entity: null  # defaults to your wandb user/team
+  project: beemo-pretrain
+  name: null
+  dir: ./logs
+  resume: allow
+  id: null  # set to wandb id if resuming
+
+ddp:
+  force: false
+  master_addr: localhost
+  master_port: null
+
+debug: null
+
+log_weights: false
+log_grads: false

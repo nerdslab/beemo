@@ -1,0 +1,10 @@
+name: src.datasets.beemo.BeemoDataset
+neural_session_pattern: .*center_out_reaching$
+args:
+  root: ${data_root}
+  split_type: causal
+  dataset_list:
+    - mp
+    - gallego
+    - miller
+  recording_ids: "*_center_out_reaching*"

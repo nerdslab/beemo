@@ -1,0 +1,28 @@
+# behavior-only pretraining, no spikes. feeds neural_finetune
+defaults:
+  - base
+  - model: backbone.yaml
+  - data: beemo_co.yaml
+  - trainer: beemo_behavior_only
+  - _self_
+
+window: 0.5
+
+train_transform:
+  - name: src.data.data_view.DataView
+    args:
+      ctx_len: ${window}
+      pred_len: ${window}
+      feature_fields: null
+      feature_style: null
+      reset_origin: false
+      test_mode: false
+
+model:
+  name: src.model.beemo_poyo_behavior_only.BeemoPOYOBehaviorOnly
+  args:
+    ctx_duration: 0.5
+    num_neural_sessions: 0
+
+batch_size: 256
+num_epochs: 100

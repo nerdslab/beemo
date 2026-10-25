@@ -1,0 +1,5 @@
+name: src.model.baselines.linear.Linear
+args:
+  bin_size: 0.02
+  out_stride: 1
+  ctx_duration: 1.0

@@ -1,0 +1,15 @@
+# shared backbone size for pretraining and fine-tuning.
+# pick the encoder with model.name= (beemo_poyo, beemo_ndt, poyo, ndt, ...)
+name: src.model.beemo_poyo.BeemoPOYO
+args:
+  ctx_duration: 1.0 # seconds
+  latent_timestep: 0.125 # seconds
+  latents_per_timestep: 32
+  dim: 128
+  num_heads: 8
+  depth: 8
+  dim_head: null
+  lin_dropout: 0.2
+  atn_dropout: 0.2
+  ffn_mult: 4
+  decoder_depth: 8

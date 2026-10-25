@@ -1,0 +1,6 @@
+name: src.datasets.churchland.ChurchlandDataset
+args:
+  root: ${data_root}
+  split_type: causal
+  recording_ids:
+    - jenkins_20090912_center_out_reaching

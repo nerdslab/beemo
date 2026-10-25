@@ -1,0 +1,10 @@
+name: src.model.baselines.mlp.MLP
+args:
+  ctx_duration: 1.0
+  bin_size: 0.02
+  out_stride: 1
+  depth: 2
+  hidden_dim: 64
+  dropout: 0.2
+  activation: relu
+  batch_norm: true

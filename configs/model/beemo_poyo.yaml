@@ -1,0 +1,5 @@
+# BEEMO with the POYO encoder (backbone.yaml's default; here for symmetry)
+defaults:
+  - backbone
+
+name: src.model.beemo_poyo.BeemoPOYO

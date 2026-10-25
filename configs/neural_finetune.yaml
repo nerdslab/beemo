@@ -1,0 +1,29 @@
+# train a new neural encoder onto a behavior-only checkpoint,
+# behavior-trained weights frozen
+defaults:
+  - base
+  - model: backbone.yaml
+  - data: perich_miller_ft.yaml
+  - trainer: baseline
+  - _self_
+
+trainer:
+  name: src.trainers.neural_ft.NeuralFtTrainer
+
+model:
+  name: src.model.beemo_poyo_behavior_only.BeemoPOYOBehaviorOnly
+
+val:
+  patience: 50
+
+ckpt:
+  enable: true
+  every_n_epochs: 1
+  load_from: null  # <wandb_run_id>/epoch_N.pt of the behavior-only checkpoint
+
+finetuning:
+  enable: true      # triggers extend_vocab in _init_model_vocab and allows ckpt loading
+  unfreeze_at_epoch: 0  # unused by the neural_ft trainer
+
+wandb:
+  project: beemo-neural-finetune

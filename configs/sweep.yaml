@@ -1,0 +1,12 @@
+defaults:
+  - single_session
+  - _self_          
+
+ray:
+  name: ray
+  cpu_req: 2
+  gpu_req: 0.5
+  address: auto
+  max_concurrent_trials: 4  # null => unbounded
+  log_to_driver: false
+  num_samples: 100

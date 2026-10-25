@@ -1,0 +1,14 @@
+# single-session POYO. dim, num_heads, depth, dropout, lr and batch_size
+# are swept by POYO.create_search_space; the rest are used as written
+name: src.model.poyo.POYO
+args:
+  ctx_duration: 1.0 # seconds
+  latent_timestep: 0.125 # seconds
+  latents_per_timestep: 16
+  dim: 64
+  num_heads: 4
+  depth: 6
+  dim_head: null
+  lin_dropout: 0.4
+  atn_dropout: 0.2
+  ffn_mult: 4

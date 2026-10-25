@@ -1,0 +1,20 @@
+name: src.datasets.perich_miller.PerichMillerDataset
+args:
+  root: ${data_root}
+  split_type: causal
+  recording_ids:
+    - t_20130819_center_out_reaching
+
+# target recordings
+# t_20130819_center_out_reaching
+# t_20130820_random_target_reaching
+# t_20130821_center_out_reaching
+# t_20130822_random_target_reaching
+# t_20130823_center_out_reaching
+# t_20130830_random_target_reaching
+# t_20130903_center_out_reaching
+# t_20130904_random_target_reaching
+# t_20130905_center_out_reaching
+# t_20130906_random_target_reaching
+# t_20130909_center_out_reaching
+# t_20130910_random_target_reaching

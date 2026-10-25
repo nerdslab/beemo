@@ -1,0 +1,15 @@
+# NDT encoder (self-attention over binned spikes) + POYO-style query decoder.
+name: src.model.ndt.NDT
+args:
+  ctx_duration: 1.0 # seconds
+  bin_size: 0.02 # seconds; swept by NDT.create_search_space
+  # unused by NDT.forward, but __init__ requires them
+  latent_timestep: 0.125
+  latents_per_timestep: 16
+  dim: 64
+  num_heads: 4
+  depth: 6
+  dim_head: null
+  lin_dropout: 0.4
+  atn_dropout: 0.2
+  ffn_mult: 4

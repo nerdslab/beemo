@@ -1,0 +1,7 @@
+# BEEMO with the NDT encoder
+defaults:
+  - backbone
+
+name: src.model.beemo_ndt.BeemoNDT
+args:
+  bin_size: 0.02

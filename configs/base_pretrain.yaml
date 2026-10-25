@@ -1,0 +1,14 @@
+# pretraining without the behavior prior (ablation against beemo_pretrain)
+# for NDT: model.name=src.model.ndt.NDT ++model.args.bin_size=0.02
+defaults:
+  - base
+  - model: backbone.yaml
+  - data: beemo_co_no_gallego.yaml
+  - trainer: baseline
+  - _self_
+
+model:
+  name: src.model.poyo.POYO
+
+batch_size: 256
+num_epochs: 100
