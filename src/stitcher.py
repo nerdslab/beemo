@@ -11,7 +11,6 @@ try:
     import wandb
 except ImportError:
     wandb = None
-from torch_brain.registry import ModalitySpec, DataType
 from src.distributed import all_gather_object
 
 
@@ -103,32 +102,22 @@ class DecodingStitchEvaluator:
         self,
         session_ids: Iterable[str],
         device: torch.device,
-        modality_spec: Optional[ModalitySpec] = None,
-        metric_factory: Optional[Callable[[int], ModalitySpec]] = None,
+        dim: int = 2,
+        metric_factory: Optional[Callable[[], torchmetrics.Metric]] = None,
     ):
         r"""
         Args:
             session_ids: An iterable of session IDs for which the metrics are to be computed.
-            modality_spec: (Optional) The modality specification for the task. Either this
-                or metric_factory must be provided.
+            dim: Dimension of the behavior being decoded.
             metric_factory: (Optional) A callable that returns an instance of the metric to be used.
-                If not provided, the metric is inferred based on the modality_spec.
+                Defaults to R2Score.
         """
-        if metric_factory is not None:
-            pass
-        elif modality_spec.type == DataType.CONTINUOUS:
+        if metric_factory is None:
             metric_factory = lambda: torchmetrics.R2Score()
-        elif modality_spec.type in [DataType.BINARY, DataType.MULTINOMIAL]:
-            metric_factory = lambda: torchmetrics.Accuracy(
-                task="multiclass", num_classes=modality_spec.dim
-            )
-        else:
-            raise ValueError(f"Unsupported datatype: {modality_spec.type}")
 
         self.metrics = {k: metric_factory() for k in session_ids}
 
-        self.dim = modality_spec.dim
-        self.data_type = modality_spec.type
+        self.dim = dim
         self.device = device
         self._init_cache()
 
@@ -189,16 +178,10 @@ class DecodingStitchEvaluator:
                 metrics[session_id] = metric_fn.compute().item()
 
             else:
-                if self.data_type == DataType.CONTINUOUS:
-                    metric_fn.to(self.device).update(
-                        torch.empty(0, self.dim, device=self.device),
-                        torch.empty(0, self.dim, device=self.device),
-                    )
-                else:
-                    metric_fn.to(self.device).update(
-                        torch.empty(0, self.dim, device=self.device),
-                        torch.empty(0, device=self.device),
-                    )
+                metric_fn.to(self.device).update(
+                    torch.empty(0, self.dim, device=self.device),
+                    torch.empty(0, self.dim, device=self.device),
+                )
                 metrics[session_id] = 0
             metric_fn.reset()
 

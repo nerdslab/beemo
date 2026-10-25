@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
-from temporaldata import Interval
+from torch_brain.data import Interval
 from typing import Optional, Literal
-from torch_brain.data import collate as tbrain_collate
-from temporaldata import Data
+from torch_brain.batching import collate as tbrain_collate
+from torch_brain.data import Data
 import torch
 
-from torch_brain.dataset import NestedSpikingDataset as BaseNestedSpikingDataset
+from torch_brain.datasets import NestedSpikingDataset as BaseNestedSpikingDataset
 
 
 def calc_out_idx_slice(ctx, out):

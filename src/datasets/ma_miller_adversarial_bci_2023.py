@@ -1,7 +1,7 @@
 from typing import Callable, Optional
 from pathlib import Path
 
-from torch_brain.dataset import Dataset, SpikingDatasetMixin
+from torch_brain.datasets import Dataset, SpikingDatasetMixin
 
 
 class MaMillerAdversarialBCI2023(SpikingDatasetMixin, Dataset):

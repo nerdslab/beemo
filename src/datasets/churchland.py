@@ -1,14 +1,13 @@
 import copy
-from brainsets.datasets import ChurchlandShenoyNeural2012
-from temporaldata import Data
+from torch_brain.datasets import ChurchlandShenoyNeural2012
+from torch_brain.data import Data
 from copy import deepcopy
-import torchmetrics
 import numpy as np
-from temporaldata import Interval
+from torch_brain.data import Interval
 from src.datasets.sampling_mixin import SamplingIntervalMixin
-from torch_brain.dataset.dataset import DatasetIndex
+from torch_brain.datasets import DatasetIndex
 from src.datasets.perich_miller import calc_out_idx_slice
-from torch_brain.data import collate as tbrain_collate
+from torch_brain.batching import collate as tbrain_collate
 from pathlib import Path
 from glob import glob
 from omegaconf import ListConfig
@@ -21,14 +20,12 @@ class ChurchlandDataset(SamplingIntervalMixin, ChurchlandShenoyNeural2012):
 
         self.READOUT_CONFIG = {
             "readout": {
-                "readout_id": "cursor_velocity_2d",
                 "weights": {
                     "movement_phases.hold_period": 0.1 if self.use_weights else 1.0,
                     "movement_phases.reach_period": 1.0 if self.use_weights else 1.0,
                     "movement_phases.return_period": 1.0,
                     "cursor_outlier_segments": 0.0,
                 },
-                "metrics": [{"metric": torchmetrics.R2Score()}],
             }
         }
 

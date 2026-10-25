@@ -2,7 +2,6 @@
 # python-version = "3.11"
 # dependencies = [
 #   "requests==2.32.3",
-#   "git+https://github.com/neuro-galaxy/temporaldata@dccfd9081da8e0e2f6c42d9917449fde8402906f",
 # ]
 # ///
 
@@ -16,15 +15,13 @@ import numpy as np
 import pandas as pd
 import requests
 
-from brainsets import serialize_fn_map
-from brainsets.descriptions import (
+from torch_brain.data import (
     BrainsetDescription,
     SessionDescription,
     SubjectDescription,
 )
-from brainsets.pipeline import BrainsetPipeline
-from brainsets.taxonomy import Sex, Species, Task
-from temporaldata import (
+from torch_brain.pipeline import BrainsetPipeline
+from torch_brain.data import (
     ArrayDict,
     Data,
     Interval,
@@ -160,14 +157,14 @@ class Pipeline(BrainsetPipeline):
 
         subject = SubjectDescription(
             id=subject_name,
-            species=Species.UNKNOWN,
-            sex=Sex.UNKNOWN,
+            species="UNKNOWN",
+            sex="UNKNOWN",
         )
 
         session = SessionDescription(
             id=session_id,
             recording_date=datetime.datetime.strptime(date_str, "%Y%m%d"),
-            task=Task.REACHING,
+            task="REACHING",
         )
 
         self.update_status("Loading .mat")
@@ -251,7 +248,7 @@ class Pipeline(BrainsetPipeline):
 
         self.update_status("Storing")
         with h5py.File(store_path, "w") as out:
-            data.to_hdf5(out, serialize_fn_map=serialize_fn_map)
+            data.to_hdf5(out)
 
         self.update_status("Done")
 

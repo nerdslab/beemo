@@ -20,16 +20,17 @@ Follow the steps below to pretrain and finetune your own BEEMO model.
 
 ### 1. Preprocessing Data
 
-To preprocess datasets, run `brainsets prepare` for each brainset:
+To preprocess datasets, run `brainsets prepare` on each pipeline in `preprocess/`:
 
 ```bash
-brainsets prepare perich_miller_population_2018 --raw-dir ../data/raw/ ../data/processed/ --cores 8
-brainsets prepare gallego_carracedo_lfp_2022     --raw-dir ../data/raw/ ../data/processed/ --cores 8
-brainsets prepare ma_miller_adversarial_bci_2023 --raw-dir ../data/raw/ ../data/processed/ --cores 8
-brainsets prepare churchland_shenoy_neural_2012  --raw-dir ../data/raw/ ../data/processed/ --cores 8
+brainsets prepare preprocess/perich_miller_population_2018 --local --raw-dir ../data/raw --processed-dir ../data/processed --cores 8
+brainsets prepare preprocess/gallego_carracedo_lfp_2022     --local --raw-dir ../data/raw --processed-dir ../data/processed --cores 8
+brainsets prepare preprocess/ma_miller_adversarial_bci_2023 --local --raw-dir ../data/raw --processed-dir ../data/processed --cores 8
+brainsets prepare preprocess/churchland_shenoy_neural_2012  --local --raw-dir ../data/raw --processed-dir ../data/processed --cores 8
 ```
 
-Pretraining uses the first three. Churchland is only needed for the Jenkins finetuning recordings.
+- Pretraining uses the first three. Churchland is only needed for the Jenkins finetuning recordings.
+- Gallego and Ma-Miller are downloaded from Dryad, which needs API credentials. Create them at [datadryad.org](https://datadryad.org) (My account → API) and set `DRYAD_APP_ID` and `DRYAD_APP_SECRET` before running.
 
 ### 2. Pretraining
 
@@ -62,13 +63,13 @@ python train.py --config-name base_pretrain ckpt.enable=true
 The training script would print a "run_id" for the corresponding run. Use this to finetune the checkpoint on each held-out recording:
 
 ```bash
-python utils/run_finetune.py --ckpt ../ckpt/<run_id>/epoch_299.pt
+python utils/run_finetune.py --ckpt ../ckpt/<run_id>/epoch_99.pt
 ```
 
 For the decoupled route, use a behavior-only checkpoint and train a fresh neural encoder on top of it:
 
 ```bash
-python utils/run_neural_finetune.py --ckpt ../ckpt/<run_id>/epoch_299.pt --encoder poyo
+python utils/run_neural_finetune.py --ckpt ../ckpt/<run_id>/epoch_99.pt --encoder poyo
 ```
 
 - Both scripts loop over all 27 recordings. Pass `--recordings` to run a subset, and `--dry-run` to print the commands without running them.
@@ -80,7 +81,7 @@ To finetune on a single recording:
 
 ```bash
 python train.py --config-name finetune \
-    ckpt.load_from=../ckpt/<run_id>/epoch_299.pt \
+    ckpt.load_from=../ckpt/<run_id>/epoch_99.pt \
     data=perich_miller_ft data.args.recording_ids="['t_20130820_random_target_reaching']" \
     finetuning.enable=true finetuning.unfreeze_at_epoch=-1
 ```

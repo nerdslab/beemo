@@ -2,13 +2,12 @@ import copy
 from copy import deepcopy
 
 import numpy as np
-import torchmetrics
-from temporaldata import Data, Interval
+from torch_brain.data import Data, Interval
 
 from src.datasets.ma_miller_adversarial_bci_2023 import MaMillerAdversarialBCI2023
 from src.datasets.sampling_mixin import SamplingIntervalMixin
 from src.datasets.perich_miller import calc_out_idx_slice
-from torch_brain.data import collate as tbrain_collate
+from torch_brain.batching import collate as tbrain_collate
 from glob import glob
 from pathlib import Path
 from omegaconf import ListConfig
@@ -39,12 +38,10 @@ class MaMillerDataset(SamplingIntervalMixin, MaMillerAdversarialBCI2023):
         # Cursor velocity readout — center-out reaching
         self.CO_READOUT_CONFIG = {
             "readout": {
-                "readout_id": "cursor_velocity_2d",
                 "weights": {
                     "movement_phases.hold_period": 0.1 if self.use_weights else 1.0,
                     "movement_phases.reach_period": 1.0,
                 },
-                "metrics": [{"metric": torchmetrics.R2Score()}],
                 "eval_interval": "movement_phases.reach_period",
             }
         }
@@ -52,23 +49,16 @@ class MaMillerDataset(SamplingIntervalMixin, MaMillerAdversarialBCI2023):
         # Cursor velocity readout — random-target reaching
         self.RT_READOUT_CONFIG = {
             "readout": {
-                "readout_id": "cursor_velocity_2d",
                 "weights": {
                     "movement_phases.hold_period": 0.1 if self.use_weights else 1.0,
                     "movement_phases.reach_period": 1.0,
                 },
-                "metrics": [{"metric": torchmetrics.R2Score()}],
                 "eval_interval": "movement_phases.reach_period",
             }
         }
 
         # Hand force readout — isometric wrist / power grasp / key grasp
-        self.FORCE_READOUT_CONFIG = {
-            "readout": {
-                "readout_id": "cursor_velocity_2d",
-                "metrics": [{"metric": torchmetrics.R2Score()}],
-            }
-        }
+        self.FORCE_READOUT_CONFIG = {"readout": {}}
 
         dirname = kwargs.get("dirname", "ma_miller_adversarial_bci_2023")
         recording_ids = kwargs.pop("recording_ids", TRAIN_RECORDING_IDS)

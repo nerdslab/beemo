@@ -6,7 +6,7 @@
 import math
 from typing import Optional
 
-from temporaldata import Data
+from torch_brain.data import Data
 
 
 class DataView:

@@ -1,6 +1,6 @@
 import torch
 from src.samplers import DistributedSamplerWrapper
-from torch_brain.data.sampler import (
+from torch_brain.samplers import (
     RandomFixedWindowSampler,
     SequentialFixedWindowSampler,
 )
@@ -13,7 +13,6 @@ from src.utils import Precision, get_class_from_path
 from omegaconf import OmegaConf
 import wandb
 from torch_brain.transforms import Compose
-from torch_brain.registry import MODALITY_REGISTRY
 
 
 class BeemoTrainer(BaselineTrainer):
@@ -44,7 +43,6 @@ class BeemoTrainer(BaselineTrainer):
             wandb.config.update(OmegaConf.to_container(self.cfg, resolve=True))
 
         self.model = get_class_from_path(self.cfg.model.name)(
-            readout_spec=self.readout_spec,
             **self.cfg.model.args,
             neural_session_ids=self.neural_session_ids,
         )
@@ -121,18 +119,6 @@ class BeemoTrainer(BaselineTrainer):
                 ]
             ),
         )
-
-        example_recording = train_ds.get_recording(train_ds.recording_ids[0])
-        readout_id = example_recording.config["readout"]["readout_id"]
-        for recording_id in train_ds.recording_ids:
-            recording = train_ds.get_recording(recording_id)
-            if readout_id != recording.config["readout"]["readout_id"]:
-                raise ValueError(
-                    f"Readout ID mismatch: expected '{readout_id}' but got "
-                    f"'{recording.config['readout']['readout_id']}' for recording '{recording_id}'."
-                    f"POYO only supports a single readout"
-                )
-        self.readout_spec = MODALITY_REGISTRY[readout_id]
 
         self.train_dataset = train_ds
         self.eval_dataset = eval_ds

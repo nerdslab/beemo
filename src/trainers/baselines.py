@@ -37,7 +37,7 @@ class BaselinesTrainer(BaselineTrainer):
                 "data, not a hyperparameter; remove it from model.args."
             )
 
-        out_step = infer_behavior_step(self.train_dataset, self.readout_spec)
+        out_step = infer_behavior_step(self.train_dataset)
         OmegaConf.set_struct(self.cfg.model.args, False)
         self.cfg.model.args.out_step = out_step
         OmegaConf.set_struct(self.cfg.model.args, True)

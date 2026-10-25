@@ -20,25 +20,14 @@ uv venv $VENV_DIR -p $PYTHON_VERSION
 source $VENV_DIR/bin/activate
 
 uv pip install --upgrade pip
-uv pip install -r requirements.txt
 
-# Install xformers (handle GPU compatibility)
+# torch and xformers come from the same CUDA 12.8 index so their builds match
+# (torch on PyPI is built for CUDA 13)
 echo
-echo "Installing xformers..."
-GPU_MODEL=$(nvidia-smi --query-gpu=name --format=csv,noheader | head -n 1 || echo "Unknown")
-pip install -U xformers --index-url https://download.pytorch.org/whl/cu128
-# pip install xformers==0.0.32.post2
+echo "Installing torch and xformers..."
+uv pip install torch==2.11.0 xformers==0.0.35 --index-url https://download.pytorch.org/whl/cu128
 
-# if [[ "$GPU_MODEL" == *"5090"* ]]; then
-#     echo "Detected 5090 GPU — installing xformers from source."
-#     pip install "git+https://github.com/facebookresearch/xformers.git@5146f2a#egg=xformers"
-# else
-#     echo "Installing stable xformers version..."
-#     pip install xformers==0.0.32.post2 || {
-#         echo "Stable xformers failed — falling back to source install."
-#         pip install "git+https://github.com/facebookresearch/xformers.git@5146f2a#egg=xformers"
-#     }
-# fi
+uv pip install -r requirements.txt
 
 echo
 echo "✅ Environment setup complete!"

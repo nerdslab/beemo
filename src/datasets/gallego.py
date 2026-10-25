@@ -2,13 +2,12 @@ import copy
 from copy import deepcopy
 
 import numpy as np
-import torchmetrics
-from temporaldata import Data, Interval
+from torch_brain.data import Data, Interval
 
 from src.datasets.gallego_carracedo_lfp_2022 import GallegoCarracedoLFP2022
 from src.datasets.sampling_mixin import SamplingIntervalMixin
 from src.datasets.perich_miller import calc_out_idx_slice
-from torch_brain.data import collate as tbrain_collate
+from torch_brain.batching import collate as tbrain_collate
 from pathlib import Path
 from glob import glob
 from omegaconf import ListConfig
@@ -20,14 +19,12 @@ class GallegoDataset(SamplingIntervalMixin, GallegoCarracedoLFP2022):
         self.use_weights = kwargs.pop("use_weights", True)
         self.READOUT_CONFIG = {
             "readout": {
-                "readout_id": "cursor_velocity_2d",
                 "timestamp_key": "hand.timestamps",
                 "value_key": "hand.vel",
                 "weights": {
                     "movement_phases.hold_period": 0.1 if self.use_weights else 1.0,
                     "movement_phases.reach_period": 1.0,
                 },
-                "metrics": [{"metric": torchmetrics.R2Score()}],
                 "eval_interval": "movement_phases.reach_period",
             }
         }

@@ -9,8 +9,8 @@ import math
 import numpy as np
 import torch
 import torch.distributed as dist
-from temporaldata import Interval
-from torch_brain.data.dataset import DatasetIndex
+from torch_brain.data import Interval
+from torch_brain.datasets import DatasetIndex
 
 
 # class RandomFixedWindowSampler(torch.utils.data.Sampler):

@@ -1,9 +1,9 @@
 from typing import Callable, Optional, Literal
 from pathlib import Path
 
-from torch_brain.dataset import Dataset, SpikingDatasetMixin
+from torch_brain.datasets import Dataset, SpikingDatasetMixin
 import numpy as np
-from temporaldata import Interval
+from torch_brain.data import Interval
 
 
 class PerichMillerPopulation2018(SpikingDatasetMixin, Dataset):

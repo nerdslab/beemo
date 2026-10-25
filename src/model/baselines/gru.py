@@ -1,12 +1,16 @@
+# --------------------------------------------------
+# Code adapted from ibl-bwb
+# Authors: Alexander Andre, Shivasriganesh Mahato
+# --------------------------------------------------
+
 import numpy as np
 import optuna
 import torch
 from omegaconf import DictConfig
-from temporaldata import Data
+from torch_brain.data import Data
 from torch import nn
-from torch_brain.data import chain, pad
-from torch_brain.registry import ModalitySpec
-from torch_brain.utils import prepare_for_readout
+from torch_brain.batching import chain, pad
+from src.readout import prepare_readout
 
 # from torch_brain.utils.binning import bin_spikes
 from src.utils import bin_spikes
@@ -16,7 +20,7 @@ class GRU(nn.Module):
     def __init__(
         self,
         *,
-        readout_spec: ModalitySpec,
+        output_dim: int = 2,
         out_step: float,
         bin_size: float = 0.02,
         depth: int = 2,
@@ -30,7 +34,7 @@ class GRU(nn.Module):
 
         self.out_step = out_step
         self.bin_size = bin_size
-        self.modality_spec = readout_spec
+        self.output_dim = output_dim
         self.ctx_duration = kwargs.get("ctx_duration", 1.0)
         self.num_bins = round(self.ctx_duration / self.bin_size)
         self.input_proj = nn.LazyLinear(hidden_dim)
@@ -46,7 +50,7 @@ class GRU(nn.Module):
             bidirectional=bidirectional,
         )
         out_dim = hidden_dim * (2 if bidirectional else 1)
-        self.readout = nn.Linear(out_dim, readout_spec.dim)
+        self.readout = nn.Linear(out_dim, output_dim)
 
     def tokenize(self, data: Data) -> dict:
         data = data.tgt_data
@@ -64,9 +68,7 @@ class GRU(nn.Module):
                 f"saw {num_units} after {self._num_units}."
             )
 
-        behav_times, behav_gt, behav_weights, eval_mask = prepare_for_readout(
-            data, self.modality_spec
-        )
+        behav_times, behav_gt, behav_weights, eval_mask = prepare_readout(data)
 
         # fractional bin position; forward interpolates rather than snapping,
         # giving continuous output resolution at no parameter cost

@@ -6,14 +6,13 @@
 from typing import Dict, Optional
 import numpy as np
 import torch.nn as nn
-from temporaldata import Data
+from torch_brain.data import Data
 import torch
 from torch import nn, Tensor, LongTensor
 from einops import repeat
 
-from torch_brain.data import chain
+from torch_brain.batching import chain
 from torch_brain.nn import (
-    Embedding,
     InfiniteVocabEmbedding,
     RotaryTimeEmbedding,
 )
@@ -22,8 +21,7 @@ from src.nn.attention import (
     RotarySelfAttention,
 )
 from src.nn.ffn import GeGLU
-from torch_brain.registry import ModalitySpec
-from torch_brain.utils import prepare_for_readout
+from src.readout import prepare_readout
 import xformers.ops as xops
 from src.utils import is_divisible
 
@@ -40,7 +38,7 @@ class NDT(nn.Module):
         num_heads: int,
         depth: int,
         ctx_duration: float,
-        readout_spec: ModalitySpec,
+        output_dim: int = 2,
         bin_size: float,
         latent_timestep: float,
         latents_per_timestep: int,
@@ -66,7 +64,7 @@ class NDT(nn.Module):
         is_divisible(self.ctx_duration, self.latent_timestep)
         self.latent_steps = round(self.ctx_duration / self.latent_timestep)
         self.total_latents = self.latent_steps * self.latents_per_timestep
-        self.modality_spec = readout_spec
+        self.output_dim = output_dim
 
         self.dim_head = dim_head or (dim // num_heads)
 
@@ -124,7 +122,7 @@ class NDT(nn.Module):
         self.output_ffn = GeGLU(dim, ffn_mult, lin_dropout, pre_norm=True)
 
         # Output projections + loss
-        self.readout = nn.Linear(dim, self.modality_spec.dim)
+        self.readout = nn.Linear(dim, self.output_dim)
 
     def forward(
         self,
@@ -274,9 +272,7 @@ class NDT(nn.Module):
         unit_idx = unit_emb_idx_map
         unit_seqlen = num_units
 
-        behav_times, behav_gt, behav_weights, eval_mask = prepare_for_readout(
-            data, self.modality_spec
-        )
+        behav_times, behav_gt, behav_weights, eval_mask = prepare_readout(data)
         behav_times = behav_times.astype(np.float32)
         behav_gt = behav_gt.astype(np.float32)
         behav_weights = behav_weights.astype(np.float32)
