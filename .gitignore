@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+.snakemake
+outputs/*
+logs
+notebooks/
+/CLAUDE.md
+results/
