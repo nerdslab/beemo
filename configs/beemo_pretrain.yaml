@@ -8,7 +8,7 @@ defaults:
 
 model:
   args:
-    num_neural_sessions: 1000
+    num_neural_sessions: 1000  # sessions with spikes, rest are behavior-only. vary for scaling study
 
 batch_size: 256
 num_epochs: 100

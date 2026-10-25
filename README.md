@@ -52,14 +52,10 @@ python train.py --config-name base_pretrain ckpt.enable=true
 ```
 
 - We use [Hydra](https://hydra.cc/) for managing configs.
-- Options for `model=` can be found in `configs/model/*.yaml`. E.g. `model=beemo_ndt` to use binned tokenization instead of spike tokenization.
-- `model.args.num_neural_sessions` sets how many sessions contribute spikes. The rest contribute behavior only. This is what the scaling study varies.
-- The data would be read from `../data/processed` by default. Set `data_root` to change this.
-- The checkpoints would be stored in `../ckpt/<run_id>/epoch_<num>.pt` by default. Set `ckpt.dir` or `$CKPT_DIR` to change this.
-- Pretraining runs at `batch_size=256` and `num_epochs=100`. The learning rate in the config is scaled by `sqrt(batch_size)` at startup.
-- `train.py` would use one process per visible GPU. Use `CUDA_VISIBLE_DEVICES` to restrict it, or `ddp.force=true` to use DDP on a single GPU.
-- Logging goes to your own wandb account. Set `wandb.entity` to log elsewhere, or `wandb.mode=disabled` to turn it off.
-- Other available configurations can be found in `configs/base.yaml` and `configs/beemo_pretrain.yaml`.
+- Options for `model=` can be found in `configs/model/*.yaml`. E.g. `model=beemo_ndt`
+- The data would be read from `../data/processed` by default.
+- The checkpoints would be stored in `../ckpt` by default.
+- Other available configurations can be found in `configs/base.yaml` and `configs/beemo_pretrain.yaml`
 
 ### 3. Finetuning
 
