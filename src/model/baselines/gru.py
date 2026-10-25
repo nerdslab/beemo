@@ -1,3 +1,8 @@
+# --------------------------------------------------
+# Code adapted from ibl-bwb
+# Authors: Alexander Andre, Shivasriganesh Mahato
+# --------------------------------------------------
+
 import numpy as np
 import optuna
 import torch

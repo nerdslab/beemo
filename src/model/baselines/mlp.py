@@ -1,3 +1,8 @@
+# --------------------------------------------------
+# Code adapted from ibl-bwb
+# Authors: Alexander Andre, Shivasriganesh Mahato
+# --------------------------------------------------
+
 from typing import Literal
 
 import numpy as np
