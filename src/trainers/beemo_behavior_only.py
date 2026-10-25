@@ -11,7 +11,6 @@ from src.trainers.baseline import BaselineTrainer
 from src.checkpoint import CheckpointDict
 from src.stitcher import DecodingStitchEvaluator, stitch
 from src.distributed import all_gather_object
-from torch_brain.registry import DataType
 from src.trainers.beemo import BeemoTrainer
 from src.samplers import DistributedSamplerWrapper
 from torch_brain.data.sampler import (
@@ -53,16 +52,10 @@ class VizDecodingStitchEvaluator(DecodingStitchEvaluator):
 
                 metric_fn.to(self.device).update(stitched_pred, stitched_target)
             else:
-                if self.data_type == DataType.CONTINUOUS:
-                    metric_fn.to(self.device).update(
-                        torch.empty(0, self.dim, device=self.device),
-                        torch.empty(0, self.dim, device=self.device),
-                    )
-                else:
-                    metric_fn.to(self.device).update(
-                        torch.empty(0, self.dim, device=self.device),
-                        torch.empty(0, device=self.device),
-                    )
+                metric_fn.to(self.device).update(
+                    torch.empty(0, self.dim, device=self.device),
+                    torch.empty(0, self.dim, device=self.device),
+                )
 
             metrics[session_id] = metric_fn.compute().item()
             metric_fn.reset()
@@ -150,7 +143,7 @@ class BeemoBehaviorOnlyTrainer(BeemoTrainer):
         session_ids = sorted(self.eval_dataset.recording_ids)
         self.stitcher = VizDecodingStitchEvaluator(
             session_ids=session_ids,
-            modality_spec=self.readout_spec,
+            dim=self.model.output_dim,
             device=self.device,
         )
 

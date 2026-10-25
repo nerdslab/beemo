@@ -2,7 +2,6 @@ import copy
 from brainsets.datasets import ChurchlandShenoyNeural2012
 from temporaldata import Data
 from copy import deepcopy
-import torchmetrics
 import numpy as np
 from temporaldata import Interval
 from src.datasets.sampling_mixin import SamplingIntervalMixin
@@ -21,14 +20,12 @@ class ChurchlandDataset(SamplingIntervalMixin, ChurchlandShenoyNeural2012):
 
         self.READOUT_CONFIG = {
             "readout": {
-                "readout_id": "cursor_velocity_2d",
                 "weights": {
                     "movement_phases.hold_period": 0.1 if self.use_weights else 1.0,
                     "movement_phases.reach_period": 1.0 if self.use_weights else 1.0,
                     "movement_phases.return_period": 1.0,
                     "cursor_outlier_segments": 0.0,
                 },
-                "metrics": [{"metric": torchmetrics.R2Score()}],
             }
         }
 

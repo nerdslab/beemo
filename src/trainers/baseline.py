@@ -11,7 +11,7 @@ from src.utils import (
 )
 from src.stitcher import DecodingStitchEvaluator
 from src.samplers import DistributedSamplerWrapper
-from torch_brain.registry import MODALITY_REGISTRY
+from src.readout import weighted_mse_loss
 from src.samplers import (
     RandomFixedWindowBehaviorSampler,
     SequentialFixedWindowBehaviorSampler,
@@ -62,10 +62,8 @@ class BaselineTrainer(Trainer):
                 out = self.model(**batch["model_inputs"])
 
                 out = out.float()
-                loss = self.readout_spec.loss_fn(
-                    input=out,
-                    target=batch["target_values"],
-                    weights=batch["target_weights"],
+                loss = weighted_mse_loss(
+                    out, batch["target_values"], batch["target_weights"]
                 )
 
                 self.optimizer.zero_grad()
@@ -173,27 +171,13 @@ class BaselineTrainer(Trainer):
             valid_size=valid_size,
         )
 
-        example_recording = train_ds.get_recording(train_ds.recording_ids[0])
-        readout_id = example_recording.config["readout"]["readout_id"]
-        for recording_id in train_ds.recording_ids:
-            recording = train_ds.get_recording(recording_id)
-            if readout_id != recording.config["readout"]["readout_id"]:
-                raise ValueError(
-                    f"Readout ID mismatch: expected '{readout_id}' but got "
-                    f"'{recording.config['readout']['readout_id']}' for recording '{recording_id}'."
-                    f"POYO only supports a single readout"
-                )
-        self.readout_spec = MODALITY_REGISTRY[readout_id]
-
         self.train_dataset = train_ds
         self.eval_dataset = eval_ds
 
     def _setup_model(self):
         self.precision = Precision(self.cfg.precision)
 
-        self.model = get_class_from_path(self.cfg.model.name)(
-            readout_spec=self.readout_spec, **self.cfg.model.args
-        )
+        self.model = get_class_from_path(self.cfg.model.name)(**self.cfg.model.args)
 
         self.logger.info(f"Precision: {self.precision}")
         self.logger.info(f"Model: {self.model.__class__}")
@@ -425,7 +409,7 @@ class BaselineTrainer(Trainer):
         session_ids = sorted(self.eval_dataset.recording_ids)
         self.stitcher = DecodingStitchEvaluator(
             session_ids=session_ids,
-            modality_spec=self.readout_spec,
+            dim=self.model.output_dim,
             device=self.device,
         )
 

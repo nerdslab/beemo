@@ -282,7 +282,7 @@ def bin_spikes(
     return binned_spikes
 
 
-def infer_behavior_step(dataset, readout_spec) -> float:
+def infer_behavior_step(dataset) -> float:
     r"""Behavior sampling period (seconds), read from the first recording.
 
     Varies by brainset (Churchland ~1000 Hz, O'Doherty-Sabes 250 Hz), and the
@@ -291,7 +291,7 @@ def infer_behavior_step(dataset, readout_spec) -> float:
     """
     recording = dataset.get_recording(dataset.recording_ids[0])
 
-    timestamp_key = readout_spec.timestamp_key
+    timestamp_key = "cursor.timestamps"
     config = getattr(recording, "config", None)
     if isinstance(config, dict) and "readout" in config:
         timestamp_key = config["readout"].get("timestamp_key", timestamp_key)

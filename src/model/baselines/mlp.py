@@ -7,8 +7,7 @@ from omegaconf import DictConfig
 from temporaldata import Data
 from torch import nn
 from torch_brain.data import chain, pad
-from torch_brain.registry import ModalitySpec
-from torch_brain.utils import prepare_for_readout
+from src.readout import prepare_readout
 
 from src.utils import bin_spikes
 
@@ -19,7 +18,7 @@ class MLP(nn.Module):
     def __init__(
         self,
         *,
-        readout_spec: ModalitySpec,
+        output_dim: int = 2,
         out_step: float,
         ctx_duration: float = 1.0,
         bin_size: float = 0.02,
@@ -35,7 +34,7 @@ class MLP(nn.Module):
         self.out_stride = int(out_stride)
         self.ctx_duration = ctx_duration
         self.bin_size = bin_size
-        self.modality_spec = readout_spec
+        self.output_dim = output_dim
 
         model_layers = []
         in_dim = -1
@@ -60,7 +59,7 @@ class MLP(nn.Module):
             self.num_bins,
         )
         self.slot_size = self.ctx_duration / self.num_out
-        self.readout = nn.Linear(self.final_hidden_dim, self.num_out * readout_spec.dim)
+        self.readout = nn.Linear(self.final_hidden_dim, self.num_out * output_dim)
 
     def tokenize(self, data: Data) -> dict:
         data = data.tgt_data
@@ -72,9 +71,7 @@ class MLP(nn.Module):
 
         binned_spikes = binned_spikes.T.flatten()  # (N*T,)
 
-        behav_times, behav_gt, behav_weights, eval_mask = prepare_for_readout(
-            data, self.modality_spec
-        )
+        behav_times, behav_gt, behav_weights, eval_mask = prepare_readout(data)
 
         # each behavior timestamp -> its slot on the decimated output grid
         t0 = float(data.domain.start[0])
@@ -104,7 +101,7 @@ class MLP(nn.Module):
     ) -> torch.Tensor:
         x = self.net(spikes)  # (B, N*T) -> (B, hidden)
         x = self.readout(x)  # (B, hidden) -> (B, num_out*behav_dim)
-        x = x.view(-1, self.num_out, self.modality_spec.dim)
+        x = x.view(-1, self.num_out, self.output_dim)
 
         # repeat_interleave reproduces the chain-collated target ordering
         batch_idx = torch.repeat_interleave(

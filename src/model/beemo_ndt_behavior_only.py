@@ -16,8 +16,7 @@ from src.nn.attention import (
     RotarySelfAttention,
 )
 from src.nn.ffn import GeGLU
-from torch_brain.registry import ModalitySpec
-from torch_brain.utils import prepare_for_readout
+from src.readout import prepare_readout
 import xformers.ops as xops
 from src.utils import is_divisible
 
@@ -36,7 +35,7 @@ class BeemoNDTBehaviorOnly(nn.Module):
         num_heads: int,
         depth: int,
         ctx_duration: float,
-        readout_spec: ModalitySpec,
+        output_dim: int = 2,
         latent_timestep: float,
         latents_per_timestep: int,
         lin_dropout: float,
@@ -63,7 +62,7 @@ class BeemoNDTBehaviorOnly(nn.Module):
         self.bin_size = bin_size
         is_divisible(self.ctx_duration, self.bin_size)
         self.num_bins = round(self.ctx_duration / self.bin_size)
-        self.modality_spec = readout_spec
+        self.output_dim = output_dim
 
         self.dim_head = dim_head or (dim // num_heads)
 
@@ -99,7 +98,7 @@ class BeemoNDTBehaviorOnly(nn.Module):
 
         # context processing layers
 
-        self.value_embedding_layer = nn.Linear(self.modality_spec.dim, dim, bias=False)
+        self.value_embedding_layer = nn.Linear(self.output_dim, dim, bias=False)
 
         # self.tf_blocks_decoder = nn.ModuleList(
         #     [
@@ -180,7 +179,7 @@ class BeemoNDTBehaviorOnly(nn.Module):
         self.output_ffn = GeGLU(dim, ffn_mult, lin_dropout, pre_norm=True)
 
         # Output projections + loss
-        self.readout = nn.Linear(dim, self.modality_spec.dim)
+        self.readout = nn.Linear(dim, self.output_dim)
 
         self.behaviour_dropout = behaviour_dropout
         self.neural_session_ids = neural_session_ids
@@ -431,9 +430,7 @@ class BeemoNDTBehaviorOnly(nn.Module):
         unit_emb_idx_map = np.array(self.unit_emb.tokenizer(data_target.units.id))
         sess_emb_idx_map = self.session_emb.tokenizer(data_target.session.id)
 
-        behav_times, behav_gt, behav_weights, eval_mask = prepare_for_readout(
-            data_target, self.modality_spec
-        )
+        behav_times, behav_gt, behav_weights, eval_mask = prepare_readout(data_target)
 
         if (
             self.neural_session_ids is None
@@ -494,9 +491,7 @@ class BeemoNDTBehaviorOnly(nn.Module):
             behav_query_idx_ctx = np.array([], dtype=behav_query_idx.dtype)
         else:
 
-            behav_times_ctx, behav_gt_ctx, _, _ = prepare_for_readout(
-                data_ctx, self.modality_spec
-            )
+            behav_times_ctx, behav_gt_ctx, _, _ = prepare_readout(data_ctx)
             behav_times_ctx = behav_times_ctx.astype(np.float32)
             behav_gt_ctx = behav_gt_ctx.astype(np.float32)
             behav_query_idx_ctx = np.repeat(sess_emb_idx_map, len(behav_times_ctx))

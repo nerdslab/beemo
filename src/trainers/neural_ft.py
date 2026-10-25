@@ -1,6 +1,7 @@
 import torch
 from src.trainers.baseline import BaselineTrainer
 from src.utils import move_to_device
+from src.readout import weighted_mse_loss
 from typing import Optional
 from src.checkpoint import CheckpointDict
 
@@ -166,10 +167,8 @@ class NeuralFtTrainer(BaselineTrainer):
                 out = self.model(**batch["model_inputs"])
 
                 out = out.float()
-                loss = self.readout_spec.loss_fn(
-                    input=out,
-                    target=batch["target_values"],
-                    weights=batch["target_weights"],
+                loss = weighted_mse_loss(
+                    out, batch["target_values"], batch["target_weights"]
                 )
 
                 self.optimizer.zero_grad()

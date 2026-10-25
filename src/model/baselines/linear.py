@@ -5,8 +5,7 @@ from omegaconf import DictConfig
 from temporaldata import Data
 from torch import nn
 from torch_brain.data import chain, pad
-from torch_brain.registry import ModalitySpec
-from torch_brain.utils import prepare_for_readout
+from src.readout import prepare_readout
 
 from src.utils import bin_spikes
 
@@ -15,7 +14,7 @@ class Linear(nn.Module):
     def __init__(
         self,
         *,
-        readout_spec: ModalitySpec,
+        output_dim: int = 2,
         out_step: float,
         bin_size: float = 0.02,
         out_stride: int = 1,
@@ -25,7 +24,7 @@ class Linear(nn.Module):
         self.out_step = out_step
         self.out_stride = int(out_stride)
         self.bin_size = bin_size
-        self.modality_spec = readout_spec
+        self.output_dim = output_dim
         self.ctx_duration = kwargs.get("ctx_duration", 1.0)
         self.num_bins = round(self.ctx_duration / self.bin_size)
         self.num_out = min(
@@ -33,7 +32,7 @@ class Linear(nn.Module):
             self.num_bins,
         )
         self.slot_size = self.ctx_duration / self.num_out
-        self.linear = nn.LazyLinear(self.num_out * readout_spec.dim)
+        self.linear = nn.LazyLinear(self.num_out * output_dim)
 
     def tokenize(self, data: Data) -> dict:
         data = data.tgt_data
@@ -44,9 +43,7 @@ class Linear(nn.Module):
         assert binned_spikes.shape[0] == self.num_bins
         binned_spikes = binned_spikes.T.flatten()  # (N*T,)
 
-        behav_times, behav_gt, behav_weights, eval_mask = prepare_for_readout(
-            data, self.modality_spec
-        )
+        behav_times, behav_gt, behav_weights, eval_mask = prepare_readout(data)
 
         # each behavior timestamp -> its slot on the decimated output grid
         t0 = float(data.domain.start[0])
@@ -75,7 +72,7 @@ class Linear(nn.Module):
         **kwargs,
     ) -> torch.Tensor:
         x = self.linear(spikes)  # (B, N*T) -> (B, num_out*behav_dim)
-        x = x.view(-1, self.num_out, self.modality_spec.dim)
+        x = x.view(-1, self.num_out, self.output_dim)
 
         # repeat_interleave reproduces the chain-collated target ordering
         batch_idx = torch.repeat_interleave(

@@ -1,6 +1,5 @@
 import copy
 from copy import deepcopy
-import torchmetrics
 from src.datasets.perich_miller_population_2018 import PerichMillerPopulation2018
 from temporaldata import Data
 from pathlib import Path
@@ -50,7 +49,6 @@ class PerichMillerDataset(SamplingIntervalMixin, PerichMillerPopulation2018):
 
         self.CO_READOUT_CONFIG = {
             "readout": {
-                "readout_id": "cursor_velocity_2d",
                 "weights": {
                     "movement_phases.random_period": 1.0,
                     "movement_phases.hold_period": 0.1 if self.use_weights else 1.0,
@@ -59,21 +57,18 @@ class PerichMillerDataset(SamplingIntervalMixin, PerichMillerPopulation2018):
                     "movement_phases.invalid": 0.1 if self.use_weights else 1.0,
                     "cursor_outlier_segments": 0.0,
                 },
-                "metrics": [{"metric": torchmetrics.R2Score()}],
                 "eval_interval": "movement_phases.reach_period",
             }
         }
 
         self.RT_READOUT_CONFIG = {
             "readout": {
-                "readout_id": "cursor_velocity_2d",
                 "weights": {
                     "movement_phases.random_period": 1.0,
                     "movement_phases.hold_period": 0.1 if self.use_weights else 1.0,
                     "cursor_outlier_segments": 0.0,
                     "movement_phases.invalid": 0.1 if self.use_weights else 1.0,
                 },
-                "metrics": [{"metric": torchmetrics.R2Score()}],
                 "eval_interval": "movement_phases.random_period",
             }
         }
