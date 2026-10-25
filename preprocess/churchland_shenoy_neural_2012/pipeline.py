@@ -1,6 +1,9 @@
 # /// brainset-pipeline
 # python-version = "3.11"
-# dependencies = ["dandi==0.74.0"]
+# dependencies = [
+#   "dandi==0.74.0",
+#   "scipy>=1.10.1",
+# ]
 # ///
 
 import datetime
@@ -14,17 +17,15 @@ import numpy as np
 import pandas as pd
 from pynwb import NWBHDF5IO
 from scipy.ndimage import binary_dilation
-from temporaldata import ArrayDict, Data, Interval, IrregularTimeSeries
+from torch_brain.data import ArrayDict, Data, Interval, IrregularTimeSeries
 
-from brainsets import serialize_fn_map
-from brainsets.descriptions import (
+from torch_brain.data import (
     BrainsetDescription,
     DeviceDescription,
     SessionDescription,
 )
-from brainsets.pipeline import BrainsetPipeline
-from brainsets.taxonomy import RecordingTech, Task
-from brainsets.utils.dandi_utils import (
+from torch_brain.pipeline import BrainsetPipeline
+from torch_brain.utils.dandi import (
     download_file,
     extract_subject_from_nwb,
     get_nwb_asset_list,
@@ -107,12 +108,12 @@ class Pipeline(BrainsetPipeline):
         session_description = SessionDescription(
             id=session_id,
             recording_date=datetime.datetime.strptime(recording_date, "%Y%m%d"),
-            task=Task.REACHING,
+            task="REACHING",
         )
 
         device_description = DeviceDescription(
             id=device_id,
-            recording_tech=RecordingTech.UTAH_ARRAY_THRESHOLD_CROSSINGS,
+            recording_tech="UTAH_ARRAY_THRESHOLD_CROSSINGS",
         )
 
         # extract data about trial structure
@@ -175,7 +176,7 @@ class Pipeline(BrainsetPipeline):
 
         self.update_status("Storing")
         with h5py.File(store_path, "w") as file:
-            data.to_hdf5(file, serialize_fn_map=serialize_fn_map)
+            data.to_hdf5(file)
 
 
 def extract_trials(nwbfile, session_id):
@@ -570,7 +571,7 @@ def extract_spikes(nwbfile, trials, artifact_dict):
                 "id": unit_id,
                 "unit_number": unit_ctr,
                 "count": len(spikes_times),
-                "type": int(RecordingTech.UTAH_ARRAY_THRESHOLD_CROSSINGS),
+                "type": 1,  # RecordingTech.UTAH_ARRAY_THRESHOLD_CROSSINGS in brainsets v0.1
             }
         )
 

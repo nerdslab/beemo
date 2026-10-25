@@ -3,7 +3,7 @@
 # dependencies = [
 #   "dandi==0.74.0",
 #   "scikit-learn==1.5.1",
-#   "git+https://github.com/neuro-galaxy/temporaldata@dccfd9081da8e0e2f6c42d9917449fde8402906f",
+#   "scipy>=1.10.1",
 # ]
 # ///
 
@@ -20,23 +20,21 @@ from scipy.ndimage import binary_dilation, binary_erosion
 from sklearn.model_selection import train_test_split
 import pandas as pd
 
-from temporaldata import Data, IrregularTimeSeries, Interval
-from brainsets.descriptions import (
+from torch_brain.data import Data, IrregularTimeSeries, Interval
+from torch_brain.data import (
     BrainsetDescription,
     SessionDescription,
     DeviceDescription,
 )
-from brainsets.utils.dandi_utils import (
+from torch_brain.utils.dandi import (
     extract_spikes_from_nwbfile,
     extract_subject_from_nwb,
     download_file,
     get_nwb_asset_list,
 )
-from brainsets.taxonomy import RecordingTech, Task
-from brainsets import serialize_fn_map
 
-from brainsets.pipeline import BrainsetPipeline
-from temporaldata import RegularTimeSeries
+from torch_brain.pipeline import BrainsetPipeline
+from torch_brain.data import RegularTimeSeries
 
 parser = ArgumentParser()
 parser.add_argument("--redownload", action="store_true")
@@ -137,21 +135,24 @@ class Pipeline(BrainsetPipeline):
         session_description = SessionDescription(
             id=session_id,
             recording_date=datetime.datetime.strptime(recording_date, "%Y%m%d"),
-            task=Task.REACHING,
+            task="REACHING",
         )
 
         # register device
         device_description = DeviceDescription(
             id=device_id,
-            recording_tech=RecordingTech.UTAH_ARRAY_SPIKES,
+            recording_tech="UTAH_ARRAY_SPIKES",
         )
 
         self.update_status("Extracting Spikes")
         # extract spiking activity
         # this data is from dandi, we can use our helper function
         spikes, units = extract_spikes_from_nwbfile(
-            nwbfile, recording_tech=RecordingTech.UTAH_ARRAY_SPIKES
+            nwbfile, recording_tech="UTAH_ARRAY_SPIKES"
         )
+        # torch_brain 0.2 no longer stores units.type; keep it for parity with
+        # files made by brainsets v0.1 (RecordingTech.UTAH_ARRAY_SPIKES)
+        units.type = np.zeros(len(units.id), dtype=np.int64)
 
         self.update_status("Extracting Behavior")
         # extract behavior
@@ -215,7 +216,7 @@ class Pipeline(BrainsetPipeline):
 
         self.update_status("Storing")
         with h5py.File(store_path, "w") as file:
-            data.to_hdf5(file, serialize_fn_map=serialize_fn_map)
+            data.to_hdf5(file)
 
 
 def extract_behavior(nwbfile):

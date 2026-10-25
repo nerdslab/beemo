@@ -3,7 +3,6 @@
 # dependencies = [
 #   "requests==2.32.3",
 #   "py7zr",
-#   "git+https://github.com/neuro-galaxy/temporaldata@dccfd9081da8e0e2f6c42d9917449fde8402906f",
 # ]
 # ///
 
@@ -19,17 +18,15 @@ import pandas as pd
 import py7zr
 import requests
 
-from brainsets import serialize_fn_map
-from brainsets.descriptions import (
+from torch_brain.data import (
     BrainsetDescription,
     DeviceDescription,
     SessionDescription,
     SubjectDescription,
 )
-from brainsets.pipeline import BrainsetPipeline
-from brainsets.taxonomy import RecordingTech, Sex, Species, Task
-from temporaldata import ArrayDict, Data, Interval, IrregularTimeSeries
-from temporaldata import RegularTimeSeries
+from torch_brain.pipeline import BrainsetPipeline
+from torch_brain.data import ArrayDict, Data, Interval, IrregularTimeSeries
+from torch_brain.data import RegularTimeSeries
 
 DRYAD_BASE = "https://datadryad.org"
 DATASET_DOI = "doi%3A10.5061%2Fdryad.cvdncjt7n"
@@ -201,17 +198,17 @@ class Pipeline(BrainsetPipeline):
 
         subject = SubjectDescription(
             id=subject_name,
-            species=Species.MACACA_MULATTA,
-            sex=Sex.UNKNOWN,
+            species="MACACA_MULATTA",
+            sex="UNKNOWN",
         )
         session = SessionDescription(
             id=session_id,
             recording_date=datetime.datetime.strptime(date_str, "%Y%m%d"),
-            task=Task.REACHING,
+            task="REACHING",
         )
         device = DeviceDescription(
             id=f"{subject_name}_{date_str}",
-            recording_tech=RecordingTech.UTAH_ARRAY_THRESHOLD_CROSSINGS,
+            recording_tech="UTAH_ARRAY_THRESHOLD_CROSSINGS",
         )
 
         spikes, units = extract_spikes(xds)
@@ -246,7 +243,7 @@ class Pipeline(BrainsetPipeline):
 
         data = Data(**data_kwargs)
         with h5py.File(store_path, "w") as out:
-            data.to_hdf5(out, serialize_fn_map=serialize_fn_map)
+            data.to_hdf5(out)
 
     def _process_pkl_session(self, fpath, task, brainset_description):
         # Skip helper scripts
@@ -281,17 +278,17 @@ class Pipeline(BrainsetPipeline):
 
         subject = SubjectDescription(
             id=subject_name,
-            species=Species.MACACA_MULATTA,
-            sex=Sex.UNKNOWN,
+            species="MACACA_MULATTA",
+            sex="UNKNOWN",
         )
         session = SessionDescription(
             id=session_id,
             recording_date=datetime.datetime.strptime(date_str, "%Y%m%d"),
-            task=Task.REACHING,
+            task="REACHING",
         )
         device = DeviceDescription(
             id=f"{subject_name}_{date_str}",
-            recording_tech=RecordingTech.UTAH_ARRAY_THRESHOLD_CROSSINGS,
+            recording_tech="UTAH_ARRAY_THRESHOLD_CROSSINGS",
         )
 
         # Pop spike_counts are pre-smoothed firing rates (50ms bins), not timestamps.
@@ -361,7 +358,7 @@ class Pipeline(BrainsetPipeline):
             )
 
         with h5py.File(store_path, "w") as out:
-            data.to_hdf5(out, serialize_fn_map=serialize_fn_map)
+            data.to_hdf5(out)
 
 
 # ---------------------------------------------------------------------------
