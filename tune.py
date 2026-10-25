@@ -53,6 +53,8 @@ def run_training_hyperparameter(tune_params, cfg):
 
 @hydra.main(version_base="1.3", config_path="./configs", config_name="sweep.yaml")
 def main(cfg):
+    # trials run from their own directories, so relative paths must be resolved here
+    cfg.data_root = hydra.utils.to_absolute_path(cfg.data_root)
 
     ray.init(address=cfg.ray.address, log_to_driver=cfg.ray.log_to_driver)
     resources_arr = {"cpu": cfg.ray.cpu_req, "gpu": cfg.ray.gpu_req}
