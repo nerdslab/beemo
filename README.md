@@ -118,4 +118,4 @@ TODO
 ## Acknowledgments
 
 > [!NOTE]
-> This project utilizes code from and was influenced by [nuclr](https://github.com/nerdslab/nuclr).
+> This project utilizes code from and was influenced by [nuclr](https://github.com/nerdslab/nuclr) by Vinam Arora. The baselines code was adapted from [ibl-bwb](https://github.com/brainbench-org/ibl-bwb) by Alexander Andre and Shivasriganesh Mahato.
