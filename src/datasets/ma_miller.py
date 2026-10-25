@@ -2,12 +2,12 @@ import copy
 from copy import deepcopy
 
 import numpy as np
-from temporaldata import Data, Interval
+from torch_brain.data import Data, Interval
 
 from src.datasets.ma_miller_adversarial_bci_2023 import MaMillerAdversarialBCI2023
 from src.datasets.sampling_mixin import SamplingIntervalMixin
 from src.datasets.perich_miller import calc_out_idx_slice
-from torch_brain.data import collate as tbrain_collate
+from torch_brain.batching import collate as tbrain_collate
 from glob import glob
 from pathlib import Path
 from omegaconf import ListConfig

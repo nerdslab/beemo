@@ -2,12 +2,12 @@ import copy
 from copy import deepcopy
 
 import numpy as np
-from temporaldata import Data, Interval
+from torch_brain.data import Data, Interval
 
 from src.datasets.gallego_carracedo_lfp_2022 import GallegoCarracedoLFP2022
 from src.datasets.sampling_mixin import SamplingIntervalMixin
 from src.datasets.perich_miller import calc_out_idx_slice
-from torch_brain.data import collate as tbrain_collate
+from torch_brain.batching import collate as tbrain_collate
 from pathlib import Path
 from glob import glob
 from omegaconf import ListConfig

@@ -2,9 +2,9 @@ import numpy as np
 import optuna
 import torch
 from omegaconf import DictConfig
-from temporaldata import Data
+from torch_brain.data import Data
 from torch import nn
-from torch_brain.data import chain, pad
+from torch_brain.batching import chain, pad
 from src.readout import prepare_readout
 
 # from torch_brain.utils.binning import bin_spikes

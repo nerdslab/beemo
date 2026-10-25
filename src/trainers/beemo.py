@@ -1,6 +1,6 @@
 import torch
 from src.samplers import DistributedSamplerWrapper
-from torch_brain.data.sampler import (
+from torch_brain.samplers import (
     RandomFixedWindowSampler,
     SequentialFixedWindowSampler,
 )

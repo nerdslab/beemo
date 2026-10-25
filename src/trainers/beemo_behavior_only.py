@@ -13,7 +13,7 @@ from src.stitcher import DecodingStitchEvaluator, stitch
 from src.distributed import all_gather_object
 from src.trainers.beemo import BeemoTrainer
 from src.samplers import DistributedSamplerWrapper
-from torch_brain.data.sampler import (
+from torch_brain.samplers import (
     RandomFixedWindowSampler,
     SequentialFixedWindowSampler,
 )

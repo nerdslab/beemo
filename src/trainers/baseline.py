@@ -16,11 +16,12 @@ from src.samplers import (
     RandomFixedWindowBehaviorSampler,
     SequentialFixedWindowBehaviorSampler,
 )
-from torch_brain.data.sampler import (
+from torch_brain.samplers import (
     RandomFixedWindowSampler,
     SequentialFixedWindowSampler,
 )
-from torch_brain.data import Dataset, collate
+from torch_brain.batching import collate
+from torch_brain.datasets import Dataset
 from torch_brain.transforms import Compose
 from torch.utils.data import DataLoader
 from torch import Tensor

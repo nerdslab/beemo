@@ -1,13 +1,13 @@
 import copy
 from copy import deepcopy
 from src.datasets.perich_miller_population_2018 import PerichMillerPopulation2018
-from temporaldata import Data
+from torch_brain.data import Data
 from pathlib import Path
-from torch_brain.data import collate as tbrain_collate
+from torch_brain.batching import collate as tbrain_collate
 import torch
 from src.datasets.sampling_mixin import SamplingIntervalMixin
 import numpy as np
-from temporaldata import Interval
+from torch_brain.data import Interval
 from typing import Optional, Literal
 from glob import glob
 from omegaconf import ListConfig

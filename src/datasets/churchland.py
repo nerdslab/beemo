@@ -1,13 +1,13 @@
 import copy
-from brainsets.datasets import ChurchlandShenoyNeural2012
-from temporaldata import Data
+from torch_brain.datasets import ChurchlandShenoyNeural2012
+from torch_brain.data import Data
 from copy import deepcopy
 import numpy as np
-from temporaldata import Interval
+from torch_brain.data import Interval
 from src.datasets.sampling_mixin import SamplingIntervalMixin
-from torch_brain.dataset.dataset import DatasetIndex
+from torch_brain.datasets import DatasetIndex
 from src.datasets.perich_miller import calc_out_idx_slice
-from torch_brain.data import collate as tbrain_collate
+from torch_brain.batching import collate as tbrain_collate
 from pathlib import Path
 from glob import glob
 from omegaconf import ListConfig

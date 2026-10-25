@@ -13,7 +13,7 @@ from omegaconf import OmegaConf, DictConfig
 import torch
 import torch.distributed as dist
 from typing import List
-from temporaldata import IrregularTimeSeries
+from torch_brain.data import IrregularTimeSeries
 import logging
 
 
@@ -204,7 +204,7 @@ def unchain_sequences(
 from typing import Optional
 
 import numpy as np
-from temporaldata import IrregularTimeSeries, Interval
+from torch_brain.data import IrregularTimeSeries, Interval
 
 
 def bin_spikes(

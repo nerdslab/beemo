@@ -1,12 +1,12 @@
 from typing import Dict, List, Optional
 import numpy as np
 import torch.nn as nn
-from temporaldata import Data
+from torch_brain.data import Data
 import torch
 from torch import nn, Tensor, LongTensor
 from einops import repeat
 
-from torch_brain.data import chain
+from torch_brain.batching import chain
 from torch_brain.nn import (
     InfiniteVocabEmbedding,
     RotaryTimeEmbedding,
