@@ -10,6 +10,7 @@ train_transform:
       min_units: 30
       mode_units: 100
       peak: 4
+      seed: ${seed}
   - name: src.data.data_view.DataView
     args:
       ctx_len: ${window}
