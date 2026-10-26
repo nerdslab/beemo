@@ -1,6 +1,6 @@
 # --------------------------------------------------
 # Code adapted from ibl-bwb
-# Authors: Alexander Andre, Shivasriganesh Mahato
+# Authors: Alexandre Andre, Shivashriganesh Mahato
 # --------------------------------------------------
 
 from typing import Literal
