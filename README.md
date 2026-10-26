@@ -25,7 +25,7 @@ Follow the steps below to pretrain and finetune your own BEEMO model.
 To preprocess datasets, run `brainsets prepare` on each pipeline in `preprocess/`:
 
 ```bash
-brainsets prepare preprocess/perich_miller_population_2018 --local --raw-dir ../data/raw --processed-dir ../data/processed --cores 8
+brainsets prepare preprocess/perich_miller_population_2018  --local --raw-dir ../data/raw --processed-dir ../data/processed --cores 8
 brainsets prepare preprocess/gallego_carracedo_lfp_2022     --local --raw-dir ../data/raw --processed-dir ../data/processed --cores 8
 brainsets prepare preprocess/ma_miller_adversarial_bci_2023 --local --raw-dir ../data/raw --processed-dir ../data/processed --cores 8
 brainsets prepare preprocess/churchland_shenoy_neural_2012  --local --raw-dir ../data/raw --processed-dir ../data/processed --cores 8
