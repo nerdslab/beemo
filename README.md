@@ -6,6 +6,8 @@ BEEMO learns a behavior prior across many sessions and reuses it when decoding b
 
 This repository supports two neural encoders: POYO, a latent-bottleneck transformer with spike tokenization, and NDT, which uses binned tokenization.
 
+![BEEMO under neural dropout](beemo-neural-dropout.gif)
+
 ## Usage
 
 This project has been developed on Python3.11, with environment management using [`uv`](https://docs.astral.sh/uv/getting-started/installation/). To setup the environment, do:
