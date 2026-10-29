@@ -1,6 +1,6 @@
 # BEEMO
 
-Official codebase for BEEMO as presented in "Scaling Neural Motor Decoding via Decoupled Behavioral Pretraining"
+Official codebase for BEEMO, as presented in "Scaling Neural Motor Decoding via Decoupled Behavioral Pretraining"
 
 BEEMO learns a behavior prior across many sessions and reuses it when decoding behavior from spikes on a new recording. The prior can be learned together with the neural data, or decoupled from it and learned on behavior alone, with a neural encoder attached afterwards.
 
@@ -10,7 +10,7 @@ This repository supports two neural encoders: POYO, a latent-bottleneck transfor
 
 ## Usage
 
-This project has been developed on Python3.11, with environment management using [`uv`](https://docs.astral.sh/uv/getting-started/installation/). To setup the environment, do:
+This project has been developed on Python3.11, with environment management using [`uv`](https://docs.astral.sh/uv/getting-started/installation/). To setup the environment, run:
 
 ```bash
 source utils/venv_setup.sh
@@ -36,48 +36,43 @@ brainsets prepare preprocess/churchland_shenoy_neural_2012  --local --raw-dir ..
 
 ### 2. Pretraining
 
-To pretrain on behavior and neural data together:
+Training is configured with [Hydra](https://hydra.cc/). The base command is:
 
 ```bash
-python train.py ckpt.enable=true
+python train.py --config-name <config> ckpt.enable=true
 ```
 
-To pretrain on behavior alone, which is the first stage of the decoupled route:
+Pick a `<config>` to choose the pretraining mode:
 
-```bash
-python train.py --config-name beemo_behavior_only_pretrain ckpt.enable=true
-```
+| Mode | `--config-name` | Description |
+| --- | --- | --- |
+| **Joint** | `beemo_pretrain` (default) | Behavior prior learned together with neural data |
+| **Behavior-only** | `beemo_behavior_only_pretrain` | Behavior prior alone, the first stage of the decoupled route |
+| **Neural-only** | `base_pretrain` | No behavioral pretraining (ablation) |
 
-To pretrain on neural data alone, without behavioral pretraining:
+Any config value can be overridden on the command line, e.g. `model=beemo_ndt` (options in `configs/model/`). Defaults:
 
-```bash
-python train.py --config-name base_pretrain ckpt.enable=true
-```
-
-- We use [Hydra](https://hydra.cc/) for managing configs.
-- Options for `model=` can be found in `configs/model/*.yaml`. E.g. `model=beemo_ndt`
-- The data would be read from `../data/processed` by default.
-- The checkpoints would be stored in `../ckpt` by default.
-- Other available configurations can be found in `configs/base.yaml` and `configs/beemo_pretrain.yaml`
+- Data is read from `../data/processed`.
+- Checkpoints are written to `../ckpt`.
+- See `configs/base.yaml` for the remaining options.
 
 ### 3. Finetuning
 
-The training script would print a "run_id" for the corresponding run. Use this to finetune the checkpoint on each held-out recording:
+Each pretraining run prints a `run_id`. Finetune its checkpoint on every held-out recording with the script matching your pretraining mode:
 
-```bash
-python utils/run_finetune.py --ckpt ../ckpt/<run_id>/epoch_99.pt
-```
+| Pretraining mode | Command |
+| --- | --- |
+| **Joint** | `python utils/run_finetune.py --ckpt ../ckpt/<run_id>/epoch_99.pt` |
+| **Behavior-only** | `python utils/run_neural_finetune.py --ckpt ../ckpt/<run_id>/epoch_99.pt --encoder poyo` |
 
-For the decoupled route, use a behavior-only checkpoint and train a fresh neural encoder on top of it:
+For behavior-only checkpoints, a fresh neural encoder (`poyo` or `ndt`) is attached. The behavior weights start frozen and are unfrozen at `--unfreeze-at-epoch`.
 
-```bash
-python utils/run_neural_finetune.py --ckpt ../ckpt/<run_id>/epoch_99.pt --encoder poyo
-```
+Both scripts loop over all 27 recordings and share these flags:
 
-- Both scripts loop over all 27 recordings. Pass `--recordings` to run a subset, and `--dry-run` to print the commands without running them.
-- `--unfreeze-at-epoch` controls gradual unfreezing. `-1` unfreezes everything immediately.
-- `run_finetune.py --few-shot` switches to the few-shot split.
-- `run_neural_finetune.py --encoder ndt` uses the NDT encoder.
+- `--recordings`: run a subset
+- `--dry-run`: print the commands without running them
+- `--unfreeze-at-epoch`: epoch for gradual unfreezing (`-1` unfreezes everything immediately in `run_finetune.py`)
+- `--few-shot` (`run_finetune.py` only): use the few-shot split
 
 To finetune on a single recording:
 
@@ -90,21 +85,20 @@ python train.py --config-name finetune \
 
 ### 4. Single-session Baselines
 
-To train one recording from scratch:
+Train a model from scratch on one recording with the `single_session` config:
 
 ```bash
 python train.py --config-name single_session data.args.recording_ids="['t_20130819_center_out_reaching']"
 ```
 
-To sweep hyperparameters per recording with Optuna:
+To sweep hyperparameters per recording with Optuna, pick a `--model` from `poyo`, `ndt`, `linear`, `mlp` or `gru`:
 
 ```bash
 python utils/run_sweep.py --model poyo
 ```
 
-- Options for `--model` are `poyo`, `ndt`, `linear`, `mlp` and `gru`.
-- Ray runs locally. `--gpu-req` and `--cpu-req` set the per-trial resource share, and `--num-samples` the number of trials per recording.
-- Each model defines its own search space as `create_search_space` and `process_tunable_params`.
+- `--gpu-req` and `--cpu-req` set the per-trial resource share, and `--num-samples` the number of trials per recording.
+- Each model defines its search space in `create_search_space` and `process_tunable_params`.
 
 ### 5. Using Your Own Neural Encoder
 
