@@ -2,6 +2,10 @@
 
 Official codebase for BEEMO, as presented in "Scaling Neural Motor Decoding via Decoupled Behavioral Pretraining"
 
+[ [`Project Page`](https://nerdslab.github.io/beemo) ]
+[ [`Paper`](https://arxiv.org/abs/2611.08263) ]
+[ [`OpenReview`](https://openreview.net/forum?id=I0HCQLIKMJ) ]
+
 BEEMO learns a behavior prior across many sessions and reuses it when decoding behavior from spikes on a new recording. The prior can be learned together with the neural data, or decoupled from it and learned on behavior alone, with a neural encoder attached afterwards.
 
 This repository supports two neural encoders: POYO, a latent-bottleneck transformer with spike tokenization, and NDT, which uses binned tokenization.
