@@ -109,7 +109,14 @@ To pretrain BEEMO with your own neural encoder, replace the POYO or NDT encoder 
 If you find this repository useful in your research, please consider giving a star ⭐ and a citation
 
 ```bib
-TODO
+@inproceedings{
+    lachi2026scaling,
+    title={Scaling Neural Motor Decoding via Decoupled Behavioral Pretraining},
+    author={Divyansha Lachi and Vinam Arora and Shivashriganesh P. Mahato and Alexandre Andre and Eva L Dyer},
+    booktitle={The Fortieth Annual Conference on Neural Information Processing Systems},
+    year={2026},
+    url={https://arxiv.org/html/2611.08263v1}
+}
 ```
 
 ## Acknowledgments
