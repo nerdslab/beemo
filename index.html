@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BEEMO</title>
+    <!-- TODO: add assets/favicon.png and uncomment -->
+    <!-- <link rel="icon" type="image/x-icon" href="assets/favicon.png" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="main.css" />
+  </head>
+
+  <body>
+    <div class="flex flex-col items-center w-full max-w-[800px] px-4 mx-auto">
+      <div class="flex flex-col items-center mt-8">
+        <h1 class="text-5xl font-bold mb-2">BEEMO</h1>
+        <h2 class="text-3xl font-normal text-center">
+          Scaling Neural Motor Decoding via Decoupled Behavioral Pretraining
+        </h2>
+      </div>
+
+      <!-- Authors: TODO fill in names, links and affiliation numbers -->
+      <div class="my-4 text-lg">
+        <div class="flex pt-4 gap-x-5 items-center justify-center flex-wrap">
+          <div class="flex items-center">
+            <a href="https://div-ish.com/">Divyansha Lachi</a
+            ><span class="sup">1</span>
+          </div>
+          <div class="flex items-center">
+            <a href="#">Author Two</a><span class="sup">1</span>
+          </div>
+          <div class="flex items-center">
+            <a href="#">Author Three</a><span class="sup">2</span>
+          </div>
+          <div class="flex items-center">
+            <a href="https://directory.seas.upenn.edu/eva-dyer/">Eva L. Dyer</a>
+            <span class="sup">1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pb-4">
+        <div class="flex items-center justify-center gap-x-5 flex-wrap">
+          <div class="flex items-center">
+            <span class="sup">1</span>University of Pennsylvania,
+          </div>
+          <div class="flex items-center">
+            <span class="sup">2</span>Institution Two
+          </div>
+        </div>
+      </div>
+
+      <!-- TODO: add a logo at assets/logo.png and uncomment -->
+      <!-- <img src="assets/logo.png" alt="BEEMO" class="w-40 my-4" /> -->
+
+      <!-- Links: TODO replace "#" with real URLs -->
+      <div class="flex gap-4 my-4 flex-wrap justify-center">
+        <a href="#">
+          <div
+            class="flex gap-2 items-center justify-center rounded-full py-2 px-4 bg-amber-600 hover:bg-amber-700 cursor-pointer"
+          >
+            <i class="fa-solid fa-file-pdf text-lg" style="color: white"></i>
+            <span style="color: white">Paper</span>
+          </div>
+        </a>
+        <a href="#">
+          <div
+            class="flex gap-2 items-center justify-center rounded-full py-2 px-4 bg-emerald-700 hover:bg-emerald-900 cursor-pointer"
+          >
+            <i class="fa-solid fa-person-chalkboard text-lg" style="color: white"></i>
+            <span style="color: white">Poster</span>
+          </div>
+        </a>
+        <a href="#">
+          <div
+            class="flex gap-2 items-center justify-center rounded-full py-2 px-4 bg-red-500 hover:bg-red-600 cursor-pointer"
+          >
+            <i class="fa-solid fa-comments text-lg" style="color: white"></i>
+            <span style="color: white">OpenReview</span>
+          </div>
+        </a>
+        <a href="https://github.com/nerdslab/beemo">
+          <div
+            class="flex gap-2 items-center justify-center rounded-full py-2 px-4 bg-gray-800 hover:bg-gray-900 cursor-pointer"
+          >
+            <i class="fa-brands fa-github text-lg" style="color: white"></i>
+            <span style="color: white">Code</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Abstract: TODO replace with the paper abstract -->
+      <div class="w-full max-w-[750px] mt-8">
+        <div class="font-bold text-lg mb-2">Abstract</div>
+        <p class="text-base text-justify">
+          <span class="font-mono">BEEMO</span> learns a behavior prior across
+          many sessions and reuses it when decoding behavior from spikes on a
+          new recording. The prior can be learned together with the neural
+          data, or decoupled from it and learned on behavior alone, with a
+          neural encoder attached afterwards.
+          <span class="font-mono">BEEMO</span> supports two neural encoders:
+          POYO, a latent-bottleneck transformer with spike tokenization, and
+          NDT, which uses binned tokenization.
+        </p>
+      </div>
+
+      <div class="w-full flex justify-center">
+        <img
+          src="assets/beemo-neural-dropout.gif"
+          alt="BEEMO under neural dropout"
+          class="w-full max-w-[650px] my-8"
+        />
+      </div>
+    </div>
+    <div class="w-full h-10 mt-20 py-8 text-center text-gray-500"></div>
+  </body>
+</html>
