@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>BEEMO</title>
+    <title>BeeMO</title>
     <!-- TODO: add assets/favicon.png and uncomment -->
     <!-- <link rel="icon" type="image/x-icon" href="assets/favicon.png" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,28 +21,28 @@
   <body>
     <div class="flex flex-col items-center w-full max-w-[800px] px-4 mx-auto">
       <div class="flex flex-col items-center mt-8">
-        <h1 class="text-5xl font-bold mb-2">BEEMO</h1>
+        <h1 class="text-5xl font-bold mb-2">BeeMO</h1>
         <h2 class="text-3xl font-normal text-center">
           Scaling Neural Motor Decoding via Decoupled Behavioral Pretraining
         </h2>
       </div>
 
-      <!-- Authors: TODO fill in names, links and affiliation numbers -->
       <div class="my-4 text-lg">
         <div class="flex pt-4 gap-x-5 items-center justify-center flex-wrap">
           <div class="flex items-center">
-            <a href="https://div-ish.com/">Divyansha Lachi</a
-            ><span class="sup">1</span>
+            <a href="https://div-ish.com/">Divyansha Lachi</a><span class="sup">1</span>
           </div>
           <div class="flex items-center">
-            <a href="#">Author Two</a><span class="sup">1</span>
+            <a href="https://vinam.dev">Vinam Arora</a><span class="sup">1</span>
           </div>
           <div class="flex items-center">
-            <a href="#">Author Three</a><span class="sup">2</span>
+            <a href="https://github.com/ShivashriganeshMahato">Shivashriganesh P. Mahato</a><span class="sup">1</span>
           </div>
           <div class="flex items-center">
-            <a href="https://directory.seas.upenn.edu/eva-dyer/">Eva L. Dyer</a>
-            <span class="sup">1</span>
+            <a href="https://github.com/AlexandreAndr">Alexandre Andre</a><span class="sup">1</span>
+          </div>
+          <div class="flex items-center">
+            <a href="https://directory.seas.upenn.edu/eva-dyer/">Eva L. Dyer</a><span class="sup">1</span>
           </div>
         </div>
       </div>
@@ -50,20 +50,17 @@
       <div class="pb-4">
         <div class="flex items-center justify-center gap-x-5 flex-wrap">
           <div class="flex items-center">
-            <span class="sup">1</span>University of Pennsylvania,
-          </div>
-          <div class="flex items-center">
-            <span class="sup">2</span>Institution Two
+            <span class="sup">1</span>University of Pennsylvania
           </div>
         </div>
       </div>
 
       <!-- TODO: add a logo at assets/logo.png and uncomment -->
-      <!-- <img src="assets/logo.png" alt="BEEMO" class="w-40 my-4" /> -->
+      <!-- <img src="assets/logo.png" alt="BeeMO" class="w-40 my-4" /> -->
 
-      <!-- Links: TODO replace "#" with real URLs -->
+      <!-- Links -->
       <div class="flex gap-4 my-4 flex-wrap justify-center">
-        <a href="#">
+        <a href="https://arxiv.org/abs/2611.08263">
           <div
             class="flex gap-2 items-center justify-center rounded-full py-2 px-4 bg-amber-600 hover:bg-amber-700 cursor-pointer"
           >
@@ -71,15 +68,7 @@
             <span style="color: white">Paper</span>
           </div>
         </a>
-        <a href="#">
-          <div
-            class="flex gap-2 items-center justify-center rounded-full py-2 px-4 bg-emerald-700 hover:bg-emerald-900 cursor-pointer"
-          >
-            <i class="fa-solid fa-person-chalkboard text-lg" style="color: white"></i>
-            <span style="color: white">Poster</span>
-          </div>
-        </a>
-        <a href="#">
+        <a href="https://openreview.net/forum?id=I0HCQLIKMJ">
           <div
             class="flex gap-2 items-center justify-center rounded-full py-2 px-4 bg-red-500 hover:bg-red-600 cursor-pointer"
           >
@@ -97,25 +86,43 @@
         </a>
       </div>
 
-      <!-- Abstract: TODO replace with the paper abstract -->
+      <!-- Abstract -->
       <div class="w-full max-w-[750px] mt-8">
         <div class="font-bold text-lg mb-2">Abstract</div>
         <p class="text-base text-justify">
-          <span class="font-mono">BEEMO</span> learns a behavior prior across
-          many sessions and reuses it when decoding behavior from spikes on a
-          new recording. The prior can be learned together with the neural
-          data, or decoupled from it and learned on behavior alone, with a
-          neural encoder attached afterwards.
-          <span class="font-mono">BEEMO</span> supports two neural encoders:
-          POYO, a latent-bottleneck transformer with spike tokenization, and
-          NDT, which uses binned tokenization.
+          Recent neural decoding approaches achieve strong performance by
+          training on large collections of paired neural-behavioral
+          recordings, but such datasets are expensive, invasive, and difficult
+          to scale. In contrast, behavioral data is abundant and easy to
+          collect, raising the question of whether neural decoding can benefit
+          from decoupling behavioral and neural representation learning. We
+          introduce <span class="font-mono">BeeMO</span>, a flexible multi-session framework that enables
+          training with arbitrary mixtures of paired neural-behavioral
+          recordings and unpaired behavioral data. A behavior decoder learns
+          movement dynamics directly from behavioral trajectories, while neural
+          activity is incorporated through cross-attention layers when
+          available, allowing behavioral and neural supervision to scale
+          independently. Across multiple intracortical motor datasets and tasks
+          in nonhuman primates, we show that incorporating unpaired behavioral
+          data improves decoding performance, particularly when transferring to
+          new tasks, and that adding even a small amount of behavioral data from
+          the target task further improves transfer. By decoupling neural and
+          behavioral data, we unlock a new dimension for scaling: unpaired
+          behavioral data, which is substantially cheaper and easier to collect
+          than paired neural recordings, can be used directly to improve
+          decoding performance. We further show that behavior-only pretraining,
+          without any neural pretraining, achieves performance comparable to
+          models pretrained on substantially larger neural datasets. Together,
+          our results suggest that scaling behavioral data offers a practical
+          and cost-effective path toward neural decoding models that generalize
+          across subjects and tasks.
         </p>
       </div>
 
       <div class="w-full flex justify-center">
         <img
           src="assets/beemo-neural-dropout.gif"
-          alt="BEEMO under neural dropout"
+          alt="BeeMO under neural dropout"
           class="w-full max-w-[650px] my-8"
         />
       </div>
